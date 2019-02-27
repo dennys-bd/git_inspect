@@ -16,7 +16,7 @@ import django_js_reverse.views
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
     path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-    path('register/', views.register),
+    path('callback/', views.callback),
     path('token/', views.token),
     path('token/refresh/', views.refresh_token),
     path('token/revoke/', views.revoke_token),
