@@ -3,9 +3,9 @@ from django.urls import path, re_path
 from django.conf.urls import include
 from django.contrib import admin
 from django.views.generic import TemplateView
-from rest_framework import routers
 # from users.viewsets import UserViewSet, GroupViewSet
 from users import views
+from loginapp import views as loginViews
 
 import django_js_reverse.views
 
@@ -16,7 +16,7 @@ import django_js_reverse.views
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
     path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-    path('callback/', views.callback),
+    path('callback/', loginViews.callback),
     path('token/', views.token),
     path('token/refresh/', views.refresh_token),
     path('token/revoke/', views.revoke_token),

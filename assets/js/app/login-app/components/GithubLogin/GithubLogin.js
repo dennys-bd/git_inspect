@@ -1,23 +1,4 @@
 import React from 'react';
-// import GitHubLogin from 'react-github-login';
-
-// const GithubLogin = () => {
-//   const onSuccess = response => console.log(response);
-//   const onFailure = response => console.error(response);
-
-//   return (
-//     <GitHubLogin
-//       className="ui basic button"
-//       clientId="57724be44134521aa9fd"
-//       onSuccess={onSuccess}
-//       onFailure={onFailure}
-//     >
-//       <i className="github icon" />
-//       Sign in with github
-//     </GitHubLogin>
-//   );
-// };
-
 
 const GithubLogin = () => {
   const CLIENT_ID = () => '57724be44134521aa9fd';

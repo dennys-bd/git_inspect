@@ -1,3 +1,3 @@
-import GithubLogin from './components';
+import Auth from './components';
 
-export default GithubLogin;
+export default Auth;
