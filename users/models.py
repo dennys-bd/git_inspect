@@ -9,6 +9,8 @@ from .managers import UserManager
 
 class User(AbstractBaseUser, PermissionsMixin, IndexedTimeStampedModel):
     email = models.EmailField(max_length=255, unique=True)
+    github_token = models.CharField(max_length=255, blank=True, null=True)
+
     is_staff = models.BooleanField(
         default=False,
         help_text=_('Designates whether the user can log into this admin '

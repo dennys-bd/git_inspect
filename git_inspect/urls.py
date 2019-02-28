@@ -15,18 +15,12 @@ import django_js_reverse.views
 
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
-    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    # path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('callback/', loginViews.callback),
-    path('token/', views.token),
-    path('token/refresh/', views.refresh_token),
-    path('token/revoke/', views.revoke_token),
-    # path('authentication/', include('users.urls')),
 
     re_path(r'^jsreverse/$', django_js_reverse.views.urls_js, name='js_reverse'),
 
-    # re_path(r'^$', TemplateView.as_view(template_name='exampleapp/itworks.html'), name='home'),
     re_path(r'^$', TemplateView.as_view(template_name='loginapp/login.html'), name='home'),
-    # path('', include(router.urls)),
 ]
 
 if settings.DEBUG:
