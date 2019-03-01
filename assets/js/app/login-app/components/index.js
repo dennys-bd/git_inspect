@@ -1,3 +1,3 @@
-import Auth from './GithubLogin';
+import Auth from './Auth/Auth';
 
 export default Auth;
