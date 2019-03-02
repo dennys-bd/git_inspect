@@ -49,13 +49,19 @@ def callback(request):
         )
         if req.status_code == http.HTTPStatus.OK:
             json_data = json.loads(req.text)
-            user = User.objects.get(email=json_data['email'])
-
-            if user:
-                user.github_token = token
+            try:
+                user = User.objects.get(github_id=json_data['id'])
+                user.email = json_data['email']
+                user.username = json_data['login']
+                user.avatar = json_data['avatar_url']
                 user.save()
-            else:
-                user = User.objects().create_user(json_data['email'], github_token=token)
+            except User.DoesNotExist:
+                user = User.objects.create_user(
+                    json_data['email'],
+                    github_id=json_data['id'],
+                    username=json_data['login'],
+                    avatar=json_data['avatar']
+                )
 
             template = loader.get_template('../templates/loginapp/login.html')
             context = {
