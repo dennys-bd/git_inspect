@@ -54,13 +54,15 @@ def callback(request):
                 user.email = json_data['email']
                 user.username = json_data['login']
                 user.avatar = json_data['avatar_url']
+                user.github_token = token
                 user.save()
             except User.DoesNotExist:
                 user = User.objects.create_user(
                     json_data['email'],
                     github_id=json_data['id'],
                     username=json_data['login'],
-                    avatar=json_data['avatar']
+                    avatar=json_data['avatar'],
+                    github_token=token,
                 )
 
             template = loader.get_template('../templates/loginapp/login.html')

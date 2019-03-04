@@ -15,6 +15,6 @@ class RepositorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Repository
         fields = (
-            'name', 'commits',
+            'name', 'full_name', 'description', 'commits',
         )
-        read_only_fields = ('commits',)
+        read_only_fields = ('fullname', 'description', 'commits',)
