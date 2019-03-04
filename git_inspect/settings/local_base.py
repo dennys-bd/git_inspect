@@ -1,3 +1,4 @@
+from dj_database_url import parse as db_url
 from .base import *  # noqa
 
 
@@ -7,12 +8,8 @@ HOST = 'http://localhost:8000'
 
 SECRET_KEY = 'secret'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': base_dir_join('db.sqlite3'),
-    }
-}
+DEFAULT_DBURL = f"postgres://{config('DB_USER', default='')}:{config('DB_PASS', default='')}@{config('DB_HOST', default='')}:5432/{config('DB_NAME', default='')}"
+DATABASES = { 'default': config('DATABASE_URL', default=DEFAULT_DBURL, cast=db_url), }
 
 STATIC_ROOT = base_dir_join('staticfiles')
 STATIC_URL = '/static/'

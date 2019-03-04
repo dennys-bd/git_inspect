@@ -61,7 +61,7 @@ def callback(request):
                     json_data['email'],
                     github_id=json_data['id'],
                     username=json_data['login'],
-                    avatar=json_data['avatar'],
+                    avatar=json_data['avatar_url'],
                     github_token=token,
                 )
 
@@ -72,4 +72,3 @@ def callback(request):
         return HttpResponse(template.render(context, request))
 
     return HttpResponseNotFound()
-
