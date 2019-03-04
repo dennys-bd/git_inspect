@@ -6,11 +6,11 @@ class CommitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Commit
         fields = (
-            'url', 'author', 'commiter', 'message', 'description',
+            'url', 'author', 'commiter', 'message',
         )
 
 class RepositorySerializer(serializers.ModelSerializer):
-    commits = CommitSerializer(source='installment_set', many=True, required=False)
+    commits = CommitSerializer(source='commit_set', many=True, required=False)
 
     class Meta:
         model = Repository
