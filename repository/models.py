@@ -1,7 +1,9 @@
+from datetime import datetime
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 
 from users.models import User
+from .querysets import CommitQuerySet
 
 class Repository(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -21,7 +23,10 @@ class Repository(models.Model):
 class Commit(models.Model):
     repository = models.ForeignKey(Repository, on_delete=models.CASCADE)
 
+    sha = models.CharField(max_length=100, primary_key=True)
     url = models.CharField(max_length=255)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
     author = JSONField()
-    commiter = JSONField()
-    message = models.CharField(max_length=255)
+    message = models.TextField(blank=True)
+
+    objects = models.Manager.from_queryset(CommitQuerySet)()

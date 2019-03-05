@@ -41,4 +41,4 @@ class CommitViewSet(ModelViewSet):
     serializer_class = CommitSerializer
 
     def get_queryset(self):
-        return Commit.objects.all()
+        return Commit.objects.order_by_date()
