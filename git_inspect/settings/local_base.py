@@ -8,8 +8,7 @@ HOST = 'http://localhost:8000'
 
 SECRET_KEY = 'secret'
 
-DEFAULT_DBURL = (f"postgres://{config('DB_USER', default='')}:{config('DB_PASS', default='')}@{config('DB_HOST', default='')}:5432/{config('DB_NAME', default='')}")
-DATABASES = {'default': config('DATABASE_URL', default=DEFAULT_DBURL, cast=db_url),}
+DATABASES = {'default': config('DATABASE_URL', default='', cast=db_url),}
 
 STATIC_ROOT = base_dir_join('staticfiles')
 STATIC_URL = '/static/'

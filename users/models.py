@@ -8,8 +8,8 @@ from .managers import UserManager
 
 class User(AbstractBaseUser, PermissionsMixin, IndexedTimeStampedModel):
     email = models.EmailField(max_length=255, unique=True)
-    github_id = models.IntegerField(unique=True)
-    username = models.CharField(max_length=255, unique=True)
+    github_id = models.IntegerField(unique=True, null=True)
+    username = models.CharField(max_length=255, unique=True, null=True)
     github_token = models.CharField(max_length=255, null=True)
     avatar = models.CharField(max_length=255, null=True, blank=True)
 

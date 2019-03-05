@@ -7,7 +7,7 @@ from repository.models import Repository, Commit
 from .serializers import RepositorySerializer, CommitSerializer
 from django.http import JsonResponse
 
-from .tasks import recover_commits
+from .tasks import recover_commits, subscribe_on_repo
 
 class RepositoryViewSet(ModelViewSet):
     serializer_class = RepositorySerializer
@@ -34,9 +34,9 @@ class RepositoryViewSet(ModelViewSet):
             saved = serializer.save(user=self.request.user)
 
             recover_commits(saved.id)
+            subscribe_on_repo.delay(saved.id)
 
         return saved
-
 
 class CommitViewSet(ModelViewSet):
     serializer_class = CommitSerializer

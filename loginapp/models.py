@@ -23,19 +23,19 @@ class CustomAuthentication(TokenAuthentication):
             msg = _('Invalid token header. Token string should not contain spaces.')
             raise exceptions.AuthenticationFailed(msg)
 
-        req = requests.get(
-            'https://api.github.com/user',
-            headers={
-                'Authorization': f'token {auth[1].decode("utf-8")}',
-                'Accept': 'application/vnd.github.v3+json'
-            },
-        )
-        if req.status_code == http.HTTPStatus.OK:
-            json_data = json.loads(req.text)
+        # req = requests.get(
+        #     'https://api.github.com/user',
+        #     headers={
+        #         'Authorization': f'token {}',
+        #         'Accept': 'application/vnd.github.v3+json'
+        #     },
+        # )
+        # if req.status_code == http.HTTPStatus.OK:
+        #     json_data = json.loads(req.text)
 
-            try:
-                user = User.objects.get(github_id=json_data['id'])
-                return (user, None)
-            except User.DoesNotExist:
-                raise exceptions.AuthenticationFailed(_('Invalid user.'))
+        try:
+            user = User.objects.get(github_token=auth[1].decode("utf-8"))
+            return (user, None)
+        except User.DoesNotExist:
+            raise exceptions.AuthenticationFailed(_('Invalid user.'))
 

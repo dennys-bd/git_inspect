@@ -8,7 +8,7 @@ const GithubLogin = () => {
   return (
     <a
       className="ui basic button"
-      href={`https://github.com/login/oauth/authorize?client_id=${CLIENT_ID()}&scope=user&redirect_uri=${REDIRECT_URI()}`}
+      href={`https://github.com/login/oauth/authorize?client_id=${CLIENT_ID()}&scope=read:user,user:email,repo:status,admin:repo_hook&redirect_uri=${REDIRECT_URI()}`}
     >
       <i className="github icon" />
       Sign in with github

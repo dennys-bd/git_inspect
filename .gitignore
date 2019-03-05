@@ -17,6 +17,7 @@ __pycache__/
 
 # data
 *.dump
+dump.rdb
 
 # npm
 node_modules/
