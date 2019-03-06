@@ -36,15 +36,13 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
 
-
     'django_js_reverse',
     'webpack_loader',
     'import_export',
 
     'common',
     'users',
-    'loginapp',
-    'repository',
+    'repositories',
 ]
 
 MIDDLEWARE = [
@@ -60,7 +58,7 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'loginapp.models.CustomAuthentication',
+        'users.authentication.CustomAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -70,7 +68,6 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
-
 
 ROOT_URLCONF = 'git_inspect.urls'
 

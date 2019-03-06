@@ -3,11 +3,11 @@ import http
 import requests
 
 from rest_framework.viewsets import ModelViewSet
-from repository.models import Repository, Commit
-from .serializers import RepositorySerializer, CommitSerializer
 from django.http import JsonResponse
-
+from .models import Repository, Commit
+from .serializers import RepositorySerializer, CommitSerializer
 from .tasks import recover_commits, subscribe_on_repo
+
 
 class RepositoryViewSet(ModelViewSet):
     serializer_class = RepositorySerializer

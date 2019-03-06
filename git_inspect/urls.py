@@ -5,9 +5,8 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from rest_framework import routers
 
-from repository.viewsets import RepositoryViewSet
-from users import views
-from loginapp import views as loginViews
+from repositories.viewsets import RepositoryViewSet
+from users import views as userViews
 
 import django_js_reverse.views
 
@@ -18,7 +17,7 @@ router.register(r'repositories', RepositoryViewSet, base_name='Repository')
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
     re_path(r'^$', TemplateView.as_view(template_name='loginapp/login.html'), name='home'),
-    path('callback/', loginViews.callback),
+    path('callback/', userViews.callback),
 
     re_path(r'^jsreverse/$', django_js_reverse.views.urls_js, name='js_reverse'),
 
