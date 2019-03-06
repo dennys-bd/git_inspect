@@ -1,11 +1,13 @@
-import json
 import http
-import requests
+import json
 
+from django.http import HttpResponse
+
+import requests
 from rest_framework.viewsets import ModelViewSet
-from django.http import JsonResponse
-from .models import Repository, Commit
-from .serializers import RepositorySerializer, CommitSerializer
+
+from .models import Commit, Repository
+from .serializers import CommitSerializer, RepositorySerializer
 from .tasks import recover_commits, subscribe_on_repo
 
 
@@ -43,3 +45,7 @@ class CommitViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Commit.objects.order_by_date()
+
+    def create(self, request, *args, **kwargs):
+        print(f'PARAMS: {request.POST}')
+        return HttpResponse(status=204)
