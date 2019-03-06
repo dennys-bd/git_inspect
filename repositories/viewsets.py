@@ -5,6 +5,7 @@ from django.http import HttpResponse
 
 import requests
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .models import Commit, Repository
 from .serializers import CommitSerializer, RepositorySerializer
@@ -42,6 +43,13 @@ class RepositoryViewSet(ModelViewSet):
 
 class CommitViewSet(ModelViewSet):
     serializer_class = CommitSerializer
+
+    def get_permissions(self):
+
+        if self.action == 'create':
+            return [AllowAny]
+        else:
+            return [IsAuthenticated]
 
     def get_queryset(self):
         return Commit.objects.order_by_date()
