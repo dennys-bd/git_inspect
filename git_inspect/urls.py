@@ -5,13 +5,14 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from rest_framework import routers
 
-from repositories.viewsets import RepositoryViewSet
+from repositories.viewsets import RepositoryViewSet, CommitViewSet
 from users import views as userViews
 
 import django_js_reverse.views
 
 router = routers.DefaultRouter()
 router.register(r'repositories', RepositoryViewSet, base_name='Repository')
+router.register(r'commits', RepositoryViewSet, base_name='Commit')
 
 
 urlpatterns = [
