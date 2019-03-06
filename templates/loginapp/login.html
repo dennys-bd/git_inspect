@@ -1,14 +1,11 @@
 {% extends 'base.html' %}
 
-
 {% block body %}
 {% if token %}
 <script>
   localStorage.setItem("token", "{{token}}")
 </script>
 {% endif %}
-
-<h1>it works! (Login)</h1>
 
 <div id="auth-app" token={{token}}></div>
 {% endblock %}

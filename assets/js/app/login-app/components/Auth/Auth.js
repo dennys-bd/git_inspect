@@ -2,7 +2,9 @@ import React from 'react';
 import { hot } from 'react-hot-loader';
 import STATUS from './status';
 import GithubLogin from './GithubLogin';
-import App from '../App/App';
+import UserValidation from './UserValidation';
+
+import './style.scss';
 
 class Auth extends React.Component {
   constructor(props) {
@@ -23,22 +25,22 @@ class Auth extends React.Component {
   }
 
   render() {
+    let element;
+
     if (this.state.status === STATUS.AUTHENTICATED) {
-      return <App />;
+      element = <UserValidation token={this.state.token} />;
+    } else {
+      element = <GithubLogin />;
     }
-    return <GithubLogin />;
+    return (
+      <div className="outer">
+        <div className="middle">
+          <h2 className="center">Login</h2>
+          {element}
+        </div>
+      </div>
+    );
   }
 }
 
 export default hot(module)(Auth);
-
-// if (this.state.status === STATUS.AUTHENTICATED) {
-//   return (
-//     <div className="ui segment">
-//       <div className="ui active inverted dimmer">
-//         <div className="ui text loader">Loading</div>
-//       </div>
-//       <p />
-//     </div>
-//   );
-// }

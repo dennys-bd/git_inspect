@@ -17,8 +17,10 @@ router.register(r'commits', RepositoryViewSet, base_name='Commit')
 
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
-    re_path(r'^$', TemplateView.as_view(template_name='loginapp/login.html'), name='home'),
+    re_path(r'^$', TemplateView.as_view(template_name='loginapp/login.html'), name='login'),
+    path(r'home', TemplateView.as_view(template_name='rootapp/home.html'), name='home'),
     path('callback/', userViews.callback),
+    path('verifytoken', userViews.verify_token),
 
     re_path(r'^jsreverse/$', django_js_reverse.views.urls_js, name='js_reverse'),
 

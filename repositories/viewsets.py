@@ -5,12 +5,21 @@ from django.http import HttpResponse
 
 import requests
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from .models import Commit, Repository
 from .serializers import CommitSerializer, RepositorySerializer
 from .tasks import recover_commits, subscribe_on_repo
 
+class IsCreateOrIsAuthenticated(BasePermission):
+    """
+    permission to create_only
+    """
+    def has_permission(self, request, view):
+        if view.action == 'create':
+            return True
+
+        return IsAuthenticated.has_permission(self, request, view)
 
 class RepositoryViewSet(ModelViewSet):
     serializer_class = RepositorySerializer
@@ -42,14 +51,9 @@ class RepositoryViewSet(ModelViewSet):
         return saved
 
 class CommitViewSet(ModelViewSet):
+    authentication_classes = []
     serializer_class = CommitSerializer
-
-    def get_permissions(self):
-
-        if self.action == 'create':
-            return [AllowAny]
-        else:
-            return [IsAuthenticated]
+    permission_classes = (IsCreateOrIsAuthenticated,)
 
     def get_queryset(self):
         return Commit.objects.order_by_date()

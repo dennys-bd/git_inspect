@@ -1,6 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Auth from '../app/login-app';
+import RootApp from '../app/root-app';
 
-// ReactDOM.render(<GithubLogin />, document.getElementById('github-app'));
-ReactDOM.render(<Auth />, document.getElementById('auth-app'));
+const elem = document.getElementById('root-app');
+
+if (elem != null) {
+  ReactDOM.render(<RootApp />, document.getElementById('root-app'));
+}
