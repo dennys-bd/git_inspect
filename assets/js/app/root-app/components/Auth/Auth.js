@@ -1,6 +1,6 @@
 import React from 'react';
-import { hot } from 'react-hot-loader';
-import STATUS from './status';
+import PropTypes from 'prop-types';
+import STATUS from './Status';
 import GithubLogin from './GithubLogin';
 import UserValidation from './UserValidation';
 
@@ -17,7 +17,8 @@ class Auth extends React.Component {
   }
 
   componentDidMount() {
-    if (this.state.token != null) {
+    const { token } = this.state;
+    if (token != null) {
       this.setState({
         status: STATUS.AUTHENTICATED,
       });
@@ -26,9 +27,11 @@ class Auth extends React.Component {
 
   render() {
     let element;
+    const { status, token } = this.state;
+    const { authenticate } = this.props;
 
-    if (this.state.status === STATUS.AUTHENTICATED) {
-      element = <UserValidation token={this.state.token} />;
+    if (status === STATUS.AUTHENTICATED) {
+      element = <UserValidation token={token} authenticate={authenticate} />;
     } else {
       element = <GithubLogin />;
     }
@@ -43,4 +46,12 @@ class Auth extends React.Component {
   }
 }
 
-export default hot(module)(Auth);
+Auth.defaultProps = {
+  authenticate: () => {},
+};
+
+Auth.propTypes = {
+  authenticate: PropTypes.func,
+};
+
+export default Auth;

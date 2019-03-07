@@ -16,17 +16,17 @@ const UserValidation = () => (
 
 const logout = () => {
   localStorage.clear();
-  window.location.replace('/');
+  window.location.replace('/login');
 };
 
 const methods = {
   componentDidMount(props) {
-    const { token } = props;
+    const { token, authenticate } = props;
 
     axios.get(`/verifytoken?token=${token}`)
       .then((response) => {
         if (response.status === 204) {
-          window.location.replace('/home');
+          authenticate();
         } else {
           logout();
         }

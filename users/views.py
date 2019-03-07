@@ -65,7 +65,7 @@ def callback(request):
                     github_token=token,
                 )
 
-            template = loader.get_template('../templates/loginapp/login.html')
+            template = loader.get_template('../templates/rootapp/home.html')
             context = {
                 'token': token,
             }
@@ -76,13 +76,33 @@ def callback(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def verify_token(request):
-
+    '''
+    Receives the token by param ?token=1234abcd,
+    validates it and the user,
+    still update the user data
+    '''
     token = request.GET.get('token', None)
 
     if token:
         try:
-            User.objects.get(github_token=token)
-            return HttpResponse(status=204)
+            user = User.objects.get(github_token=token)
+
+            req = requests.get(
+                'https://api.github.com/user',
+                headers={
+                    'Authorization': f'token {token}',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+            )
+
+            if req.status_code == http.HTTPStatus.OK:
+                json_data = json.loads(req.text)
+                user.email = json_data['email']
+                user.username = json_data['login']
+                user.avatar = json_data['avatar_url']
+                user.save()
+                return HttpResponse(status=204)
+
         except User.DoesNotExist:
             pass
 
