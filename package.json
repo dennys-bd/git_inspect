@@ -10,7 +10,8 @@
     "start": "babel-node server.js",
     "build": "NODE_ENV=production webpack -p --progress --colors --config webpack.prod.config.js --bail",
     "lint": "eslint assets",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "heroku-postbuild": "NODE_ENV=production webpack -p --progress --colors --config webpack.prod.config.js --bail"
   },
   "dependencies": {
     "@babel/cli": "^7.0.0",
