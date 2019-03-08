@@ -4,12 +4,13 @@ import json
 from django.http import HttpResponse
 
 import requests
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework.viewsets import ModelViewSet
 
 from .models import Commit, Repository
 from .serializers import CommitSerializer, RepositorySerializer
 from .tasks import recover_commits, subscribe_on_repo
+
 
 class IsCreateOrIsAuthenticated(BasePermission):
     """
@@ -21,13 +22,17 @@ class IsCreateOrIsAuthenticated(BasePermission):
 
         return IsAuthenticated.has_permission(self, request, view)
 
-class RepositoryViewSet(ModelViewSet):
+
+class RepositoryViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
     serializer_class = RepositorySerializer
 
     def get_queryset(self):
         return Repository.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
+
+        # TODO: CHECK USER NAME
+
         req = requests.get(
             f'https://api.github.com/repos/{serializer.validated_data["name"]}',
             headers={
@@ -48,9 +53,11 @@ class RepositoryViewSet(ModelViewSet):
             recover_commits(saved.id)
             subscribe_on_repo.delay(saved.id)
 
+        # TODO: OTHER CASES
         return saved
 
-class CommitViewSet(ModelViewSet):
+
+class CommitViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
     authentication_classes = []
     serializer_class = CommitSerializer
     permission_classes = (IsCreateOrIsAuthenticated,)

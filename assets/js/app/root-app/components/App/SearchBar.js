@@ -5,11 +5,11 @@ class SearchBar extends React.Component {
   constructor(props) {
     super(props);
 
-    // const { title } = this.props;
+    const { title } = this.props;
 
     this.state = {
       text: '',
-      title: this.props.title,
+      title,
     };
   }
 
@@ -17,11 +17,12 @@ class SearchBar extends React.Component {
     e.preventDefault();
 
     const { text } = this.state;
-    // const { onSubmit } = this.props;
+    const { onSubmit } = this.props;
 
-    this.props.onSubmit(text);
+    onSubmit(text);
   }
 
+  // TODO: ERROR AND LOADING TREATEMENTS
   render() {
     const { text, title } = this.state;
 
@@ -47,8 +48,8 @@ SearchBar.defaultProps = {
   title: '',
 };
 
-SearchBar.PropsTypes = {
-  onSubmit: PropsTypes.func.isRequired,
+SearchBar.propTypes = {
+  onSubmit: PropsTypes.func,
   title: PropsTypes.string,
 };
 

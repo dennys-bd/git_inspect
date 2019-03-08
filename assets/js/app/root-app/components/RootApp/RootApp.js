@@ -3,6 +3,7 @@ import { hot } from 'react-hot-loader';
 import {
   BrowserRouter, Switch, Route, Redirect,
 } from 'react-router-dom';
+import axios from 'axios';
 import Auth from '../Auth/Auth';
 import App from '../App/App';
 import STATUS from '../Auth/Status';
@@ -19,6 +20,7 @@ class RootApp extends React.Component {
   }
 
   authenticate() {
+    axios.defaults.headers.common.Authorization = `Token ${localStorage.getItem('token')}`;
     this.setState({ user: STATUS.AUTHENTICATED });
   }
 

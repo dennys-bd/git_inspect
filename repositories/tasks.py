@@ -1,13 +1,16 @@
 import datetime
 import http
 import json
-import requests
-from django.db import IntegrityError
+
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
+
+import requests
 from requests.exceptions import RequestException
 
 from git_inspect.celery import app
-from .models import Repository, Commit
+
+from .models import Commit, Repository
 
 
 @app.task
@@ -20,7 +23,7 @@ def recover_commits(repository_id):
     if repo.commit_set.count() > 0:
         pass
     else:
-        since = datetime.date.today()  - datetime.timedelta(days=30)
+        since = datetime.date.today() - datetime.timedelta(days=30)
         sincestr = since.strftime('%Y-%m-%D')
         req = requests.get(
             f'https://api.github.com/repos/{repo.full_name}/commits?since={sincestr}',
@@ -46,8 +49,9 @@ def recover_commits(repository_id):
                 except (TypeError, IntegrityError):
                     pass
 
+
 @app.task(autoretry_for=(RequestException,), default_retry_delay=15 * 60,
-retry_kwargs={'max_retries': 4})
+          retry_kwargs={'max_retries': 4})
 def subscribe_on_repo(repository_id):
     try:
         repo = Repository.objects.select_related().get(id=repository_id)
@@ -61,12 +65,12 @@ def subscribe_on_repo(repository_id):
             'Accept': 'application/vnd.github.v3+json'
         },
         json={
-            'name':'web',
+            'name': 'web',
             'events': [
                 'push'
             ],
             'config': {
-                'url': 'https://git-inspect.herokuapp.com/commit'
+                'url': 'https://git-inspect.herokuapp.com/commits/'
             }
         }
     )
