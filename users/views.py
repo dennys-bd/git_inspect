@@ -1,23 +1,25 @@
 """
     OAuth Related Views
 """
+import http
+import json
 # from rest_framework.response import Response
 import re
-import json
-import http
-import requests
 
+from django.http import HttpResponse, HttpResponseNotFound
+from django.template import loader
+
+import requests
+from decouple import config
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.http import HttpResponseNotFound, HttpResponse
-from django.template import loader
-from decouple import config
 
 from users.models import User
 
 
 CLIENT_ID = config('CLIENT_ID', default=None)
 CLIENT_SECRET = config('CLIENT_SECRET', default=None)
+
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -73,6 +75,7 @@ def callback(request):
 
     return HttpResponseNotFound()
 
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def verify_token(request):
@@ -107,3 +110,15 @@ def verify_token(request):
             pass
 
     return HttpResponse(status=404)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def check_for_commits(request):
+    commits = request.user.repository_set.prefetch_related('commit').exclude(
+        commit__isnull=True).count()
+
+    if commits > 0:
+        return HttpResponse(status=204)
+
+    return HttpResponseNotFound()

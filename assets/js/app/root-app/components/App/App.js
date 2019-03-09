@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
+import { Redirect, Switch } from 'react-router-dom';
 import SearchBar from './SearchBar';
+import CheckCommits from './CheckCommits';
 
 class App extends React.Component {
   constructor(props) {
@@ -13,6 +15,7 @@ class App extends React.Component {
   }
 
   onSearchSubmit(text) {
+    // TODO: LOADING ON SEARCH BAR
     axios.post('/repositories/?format=json', {
       name: text,
     })
@@ -20,6 +23,7 @@ class App extends React.Component {
         this.setState({ repo: text });
       })
       .catch(() => {
+        // TODO: SHOW ERROR ON SEARCH BAR
         this.setState({ hasError: true });
       });
   }
@@ -28,11 +32,17 @@ class App extends React.Component {
     const { repo, hasError } = this.state;
 
     if (repo != null) {
-      console.log('change page');
+      return <Switch><Redirect to="/commits" /></Switch>;
     }
+
     return (
-      <div className="ui container" style={{ marginTop: '10px' }}>
-        <SearchBar onSubmit={t => this.onSearchSubmit(t)} title="Add a Repository" has_error={hasError} />
+      <div className="outer">
+        <div className="middle">
+          <div className="ui container center" style={{ marginTop: '10px' }}>
+            <SearchBar onSubmit={t => this.onSearchSubmit(t)} title="Add a Repository" has_error={hasError} />
+          </div>
+          <CheckCommits />
+        </div>
       </div>
     );
   }

@@ -6,6 +6,7 @@ import {
 import axios from 'axios';
 import Auth from '../Auth/Auth';
 import App from '../App/App';
+import CommitList from '../App/CommitList';
 import STATUS from '../Auth/Status';
 
 class RootApp extends React.Component {
@@ -27,12 +28,14 @@ class RootApp extends React.Component {
   render() {
     const { user } = this.state;
 
+    // <Route path="/repository/:id" component={Repository} />;
     if (user === STATUS.AUTHENTICATED) {
       return (
         <BrowserRouter>
           <Switch>
             <Redirect from="/login" to="/" />
             <Route path="/" exact component={App} />
+            <Route path="/commits" component={CommitList} />
           </Switch>
         </BrowserRouter>
       );

@@ -58,7 +58,6 @@ class RepositoryViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
 
 
 class CommitViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
-    authentication_classes = []
     serializer_class = CommitSerializer
     permission_classes = (IsCreateOrIsAuthenticated,)
 

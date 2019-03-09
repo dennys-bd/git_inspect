@@ -1,9 +1,12 @@
 from datetime import datetime
-from django.db import models
+
 from django.contrib.postgres.fields import JSONField
+from django.db import models
 
 from users.models import User
+
 from .querysets import CommitQuerySet
+
 
 class Repository(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -19,6 +22,10 @@ class Repository(models.Model):
     @property
     def full_name(self):
         return f'{self.user.username}/{self.name}'
+
+    def __str__(self):
+        return self.name
+
 
 class Commit(models.Model):
     repository = models.ForeignKey(Repository, on_delete=models.CASCADE)
