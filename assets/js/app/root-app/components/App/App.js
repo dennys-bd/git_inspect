@@ -4,32 +4,37 @@ import { Redirect, Switch } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import CheckCommits from './CheckCommits';
 
+import './style.scss';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      hasError: false,
+      error: null,
       repo: null,
+      text: '',
+      key: 1,
     };
   }
 
   onSearchSubmit(text) {
-    // TODO: LOADING ON SEARCH BAR
+    const { key } = this.state;
     axios.post('/repositories/?format=json', {
       name: text,
     })
       .then(() => {
         this.setState({ repo: text });
       })
-      .catch(() => {
-        // TODO: SHOW ERROR ON SEARCH BAR
-        this.setState({ hasError: true });
+      .catch((e) => {
+        this.setState({ error: e.response.data.detail, key: key + 1, text });
       });
   }
 
   render() {
-    const { repo, hasError } = this.state;
+    const {
+      text, key, repo, error,
+    } = this.state;
 
     if (repo != null) {
       return <Switch><Redirect to="/commits" /></Switch>;
@@ -39,7 +44,7 @@ class App extends React.Component {
       <div className="outer">
         <div className="middle">
           <div className="ui container center" style={{ marginTop: '10px' }}>
-            <SearchBar onSubmit={t => this.onSearchSubmit(t)} title="Add a Repository" has_error={hasError} />
+            <SearchBar key={key} text={text} onSubmit={t => this.onSearchSubmit(t)} title="Add a Repository" error={error} />
           </div>
           <CheckCommits />
         </div>

@@ -4,6 +4,7 @@ import json
 from django.http import HttpResponse
 
 import requests
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
@@ -53,8 +54,12 @@ class RepositoryViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
             recover_commits(saved.id)
             subscribe_on_repo.delay(saved.id)
 
-        # TODO: OTHER CASES
-        return saved
+            return saved
+
+        raise NotFound(
+            detail="This Repository doesn't exists or you don't have permission to access it",
+            code=http.HTTPStatus.NOT_FOUND
+        )
 
 
 class CommitViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
