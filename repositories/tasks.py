@@ -41,7 +41,7 @@ def recover_commits(repository_id):
                         sha=c_data['sha'],
                         url=c_data['html_url'],
                         author=c_data['commit']['author'],
-                        created_at=c_data['commit']['committer']['date'],
+                        created=c_data['commit']['committer']['date'],
                         message=c_data['commit']['message'],
                         repository=repo,
                     )

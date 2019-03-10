@@ -38,7 +38,7 @@ const Commit = (props) => {
         <a className="header" href={data.url}>{data.message}</a>
         <Link to={`repository/${data.repository_id}`}>{data.repository_name}</Link>
         <div className="description">
-          {`${timeSince(Date.parse(data.created_at))} ago`}
+          {`${timeSince(Date.parse(data.created))} ago`}
         </div>
       </div>
     </div>
@@ -59,7 +59,7 @@ Commit.propTypes = {
       email: PropTypes.string,
     }),
     message: PropTypes.string,
-    created_at: PropTypes.string,
+    created: PropTypes.string,
     repository_name: PropTypes.string,
     repository_id: PropTypes.number,
   }),

@@ -32,7 +32,7 @@ class Commit(models.Model):
 
     sha = models.CharField(max_length=100, primary_key=True)
     url = models.CharField(max_length=255)
-    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    created = models.DateTimeField(default=datetime.now, blank=True)
     author = JSONField()
     message = models.TextField(blank=True)
 

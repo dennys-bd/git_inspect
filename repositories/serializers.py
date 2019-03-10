@@ -10,7 +10,7 @@ class CommitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Commit
         fields = (
-            'sha', 'url', 'author', 'message', 'created_at',
+            'sha', 'url', 'author', 'message', 'created',
             'repository_name', 'repository_id'
         )
 

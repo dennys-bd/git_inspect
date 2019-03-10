@@ -5,6 +5,7 @@ from django.http import HttpResponse
 
 import requests
 from rest_framework.exceptions import NotFound
+from rest_framework.pagination import CursorPagination
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
@@ -65,10 +66,15 @@ class RepositoryViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
 class CommitViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
     serializer_class = CommitSerializer
     permission_classes = (IsCreateOrIsAuthenticated,)
+    pagination_class = CursorPagination
 
     def get_queryset(self):
-        return Commit.objects.order_by_date()
+        return Commit.objects.all()
 
     def create(self, request, *args, **kwargs):
         print(f'PARAMS: {request.POST}')
         return HttpResponse(status=204)
+
+    # def list(self, request, *args, **kwargs):
+    #     import pdb; pdb.set_trace()
+    #     return super().list(request, *args, **kwargs)
