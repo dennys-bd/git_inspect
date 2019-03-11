@@ -4,8 +4,6 @@ import STATUS from './Status';
 import GithubLogin from './GithubLogin';
 import UserValidation from './UserValidation';
 
-import './style.scss';
-
 class Auth extends React.Component {
   constructor(props) {
     super(props);
@@ -36,9 +34,9 @@ class Auth extends React.Component {
       element = <GithubLogin />;
     }
     return (
-      <div className="outer">
-        <div className="middle">
-          <h2 className="center">Login</h2>
+      <div className="ui one column stackable center aligned page grid screen-centered">
+        <div className="column twelve wide">
+          <h2>Login</h2>
           {element}
         </div>
       </div>

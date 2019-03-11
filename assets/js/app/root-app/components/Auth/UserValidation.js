@@ -4,13 +4,11 @@ import lifecycle from 'react-pure-lifecycle';
 const axios = require('axios');
 
 const UserValidation = () => (
-  <div className="center">
-    <div className="ui segment padder">
-      <div className="ui active inverted dimmer">
-        <div className="ui text loader">Verifing your credentials...</div>
-      </div>
-      <p />
+  <div className="ui segment padder">
+    <div className="ui active inverted dimmer">
+      <div className="ui text loader">Verifing your credentials...</div>
     </div>
+    <p />
   </div>
 );
 

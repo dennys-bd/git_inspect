@@ -9,6 +9,8 @@ import App from '../App/App';
 import CommitList from '../App/CommitList';
 import STATUS from '../Auth/Status';
 
+import './style.scss';
+
 class RootApp extends React.Component {
   constructor(props) {
     super(props);

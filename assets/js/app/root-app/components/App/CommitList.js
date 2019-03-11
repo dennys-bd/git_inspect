@@ -89,20 +89,20 @@ class CommitList extends React.Component {
     });
 
     return (
-      <div className="ui container segment">
+      <div className="ui container segment center aligned">
         <div className="ui relaxed divided list">
           {elements}
           {isLoading && (
             <div className="item">
-              <div className="content">
-                <div className="ui active centered inline loader" />
+              <div className="content center aligned">
+                <div className="ui active inline loader" />
               </div>
             </div>
           )}
           {!isLoading && hasNext && (
             <div className="item">
-              <div clasName="content">
-                <i className="big angle double down centered inline icon" />
+              <div className="content">
+                <i className="big angle double down inline icon" />
               </div>
             </div>
           )}
