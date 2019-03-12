@@ -76,15 +76,19 @@ class CommitViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
 
     def create(self, request, *args, **kwargs):
         dct = request.data.dict()
+        print(f"dct: {dct}")
+        print(f"request.data: {request.data}")
+        print(f"request.data.get: {request.data.get('commits')}")
         commits = dct.get('commits', None)
+        print(f"commits: {commits}")
         repo = dct.get('repository', None)
 
-        try:
-            repo = Repository.objects.get(github_id=repo['id'])
-        except Repository.DoesNotExist:
-            HttpResponse(status=http.HTTPStatus.NOT_FOUND)
-
         if commits and repo:
+            try:
+                repo = Repository.objects.get(github_id=repo['id'])
+            except Repository.DoesNotExist:
+                HttpResponse(status=http.HTTPStatus.NOT_FOUND)
+
             for commit in commits:
                 if Commit.objects.filter(sha=commit['id']).exists():
                     continue
@@ -100,5 +104,7 @@ class CommitViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
                     commit.save()
                 except IntegrityError:
                     HttpResponse(status=http.HTTPStatus.UNPROCESSABLE_ENTITY)
+        else:
+            HttpResponse(status=http.HTTPStatus.UNPROCESSABLE_ENTITY)
 
         return HttpResponse(status=http.HTTPStatus.NO_CONTENT)
