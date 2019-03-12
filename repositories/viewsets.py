@@ -75,13 +75,15 @@ class CommitViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
         return Commit.objects.all().filter(repository__user=self.request.user)
 
     def create(self, request, *args, **kwargs):
-        dct = request.data.dict()
-        print(f"dct: {dct}")
+        payload = request.POST.dict().get('payload', None)
+        if not payload:
+            HttpResponse(status=http.HTTPStatus.UNPROCESSABLE_ENTITY)
+        print(f"payload: {payload}")
         print(f"request.data: {request.data}")
         print(f"request.data.get: {request.data.get('commits')}")
-        commits = dct.get('commits', None)
+        commits = payload.get('commits', None)
         print(f"commits: {commits}")
-        repo = dct.get('repository', None)
+        repo = payload.get('repository', None)
 
         if commits and repo:
             try:
