@@ -9,6 +9,9 @@ from .querysets import CommitQuerySet
 
 
 class Repository(models.Model):
+
+    # TODO: Write Delete to remove hook
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     github_id = models.IntegerField(unique=True)

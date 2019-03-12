@@ -1,6 +1,7 @@
 import http
 import json
 
+from django.db import IntegrityError
 from django.http import HttpResponse
 
 import requests
@@ -74,19 +75,30 @@ class CommitViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
         return Commit.objects.all().filter(repository__user=self.request.user)
 
     def create(self, request, *args, **kwargs):
-        # dct = request.data.dict()dct
+        dct = request.data.dict()
+        commits = dct.get('commits', None)
+        repo = dct.get('repository', None)
 
-        # import pdb; pdb.set_trace()
-        # json_data = json.loads()
-        print(f"DATA: {request.data}")
-        print('::::' * 20)
-        print(f"PARAMS: {request.POST}")
-        return HttpResponse(status=204)
+        try:
+            repo = Repository.objects.get(github_id=repo['id'])
+        except Repository.DoesNotExist:
+            HttpResponse(status=http.HTTPStatus.NOT_FOUND)
 
-    # def perform_create(self, serializer):
-    #     import pdb; pdb.set_trace()
-    #     pass
+        if commits and repo:
+            for commit in commits:
+                if Commit.objects.filter(sha=commit['id']).exists():
+                    continue
+                try:
+                    commit = Commit(
+                        sha=commit['id'],
+                        url=commit['url'],
+                        author=commit['author'],
+                        created=commit['timestamp'],
+                        message=commit.get('message', None),
+                        repository=repo,
+                    )
+                    commit.save()
+                except IntegrityError:
+                    HttpResponse(status=http.HTTPStatus.UNPROCESSABLE_ENTITY)
 
-    # def list(self, request, *args, **kwargs):
-    #     import pdb; pdb.set_trace()
-    #     return super().list(request, *args, **kwargs)
+        return HttpResponse(status=http.HTTPStatus.NO_CONTENT)
