@@ -76,37 +76,41 @@ class CommitViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
 
     def create(self, request, *args, **kwargs):
         payload = request.POST.dict().get('payload', None)
+
         if not payload:
-            HttpResponse(status=http.HTTPStatus.UNPROCESSABLE_ENTITY)
-        print(f"payload: {payload}")
-        print(f"request.data: {request.data}")
-        print(f"request.data.get: {request.data.get('commits')}")
+            return HttpResponse(status=http.HTTPStatus.UNPROCESSABLE_ENTITY)
+
+        payload = json.loads(payload)
+
         commits = payload.get('commits', None)
-        print(f"commits: {commits}")
         repo = payload.get('repository', None)
 
-        if commits and repo:
-            try:
-                repo = Repository.objects.get(github_id=repo['id'])
-            except Repository.DoesNotExist:
-                HttpResponse(status=http.HTTPStatus.NOT_FOUND)
+        print(f"payload {payload}")
+        print(f"commits {commits}")
+        print(f"repo {repo}")
 
-            for commit in commits:
-                if Commit.objects.filter(sha=commit['id']).exists():
-                    continue
-                try:
-                    commit = Commit(
-                        sha=commit['id'],
-                        url=commit['url'],
-                        author=commit['author'],
-                        created=commit['timestamp'],
-                        message=commit.get('message', None),
-                        repository=repo,
-                    )
-                    commit.save()
-                except IntegrityError:
-                    HttpResponse(status=http.HTTPStatus.UNPROCESSABLE_ENTITY)
-        else:
-            HttpResponse(status=http.HTTPStatus.UNPROCESSABLE_ENTITY)
+        if not (commits and repo):
+            return HttpResponse(status=http.HTTPStatus.UNPROCESSABLE_ENTITY)
+
+        try:
+            repo = Repository.objects.get(github_id=repo['id'])
+        except Repository.DoesNotExist:
+            return HttpResponse(status=http.HTTPStatus.NOT_FOUND)
+
+        for commit in commits:
+            if Commit.objects.filter(sha=commit['id']).exists():
+                continue
+            try:
+                commit = Commit(
+                    sha=commit['id'],
+                    url=commit['url'],
+                    author=commit['author'],
+                    created=commit['timestamp'],
+                    message=commit.get('message', None),
+                    repository=repo,
+                )
+                commit.save()
+            except IntegrityError:
+                return HttpResponse(status=http.HTTPStatus.UNPROCESSABLE_ENTITY)
 
         return HttpResponse(status=http.HTTPStatus.NO_CONTENT)
