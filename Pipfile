@@ -13,7 +13,7 @@ isort = "*"
 model-mommy = "*"
 pre-commit = "*"
 prospector = {extras = ["with-vulture"]}
-pylint = "*"
+# pylint = "*"
 pylint-django = "*"
 pylint-celery = "*"
 safety = "*"
