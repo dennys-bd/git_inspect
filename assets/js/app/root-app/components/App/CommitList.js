@@ -1,8 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import _ from 'lodash';
-import Commit from './Commit';
 
+import Commit from './Commit';
+import Header from './Header';
+
+
+// TODO: um repositorio sem commits deveria levar para a lista porém com blank state
 class CommitList extends React.Component {
   constructor(props) {
     super(props);
@@ -17,10 +22,12 @@ class CommitList extends React.Component {
 
     this.onScroll = this.onScroll.bind(this);
     this.loadCommits = this.loadCommits.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
   }
 
   componentDidMount() {
-    this.loadCommits();
+    const { id } = this.props;
+    this.loadCommits(id);
     const debounced = _.debounce(this.onScroll, 50);
     window.addEventListener('scroll', _.debounce(debounced));
   }
@@ -46,14 +53,16 @@ class CommitList extends React.Component {
     }
   }
 
-  loadCommits() {
+  loadCommits(id) {
     let promisse;
     const { next } = this.state;
     let { commits } = this.state;
     if (next != null) {
       promisse = axios.get(next);
-    } else {
+    } else if (id == null) {
       promisse = axios.get('/commits/');
+    } else {
+      promisse = axios.get(`/commits/?repository__id=${id}`);
     }
     promisse
       .then((response) => {
@@ -89,27 +98,37 @@ class CommitList extends React.Component {
     });
 
     return (
-      <div className="ui container segment center aligned">
-        <div className="ui relaxed divided list">
-          {elements}
-          {isLoading && (
-            <div className="item">
-              <div className="content center aligned">
-                <div className="ui active inline loader" />
+      <Header>
+        <div className="ui segment">
+          <div className="ui relaxed divided list">
+            {elements}
+            {isLoading && (
+              <div className="item">
+                <div className="content center aligned">
+                  <div className="ui active inline loader" />
+                </div>
               </div>
-            </div>
-          )}
-          {!isLoading && hasNext && (
-            <div className="item">
-              <div className="content">
-                <i className="big angle double down inline icon" />
+            )}
+            {!isLoading && hasNext && (
+              <div className="item">
+                <div className="content">
+                  <i className="big angle double down inline icon" />
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      </Header>
     );
   }
 }
+
+CommitList.defaultProps = {
+  id: null,
+};
+
+CommitList.propTypes = {
+  id: PropTypes.string,
+};
 
 export default CommitList;

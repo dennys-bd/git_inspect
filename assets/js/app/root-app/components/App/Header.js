@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Redirect, Switch } from 'react-router-dom';
 import SearchBar from './SearchBar';
 
-class AddARepo extends React.Component {
+class Header extends React.Component {
   constructor(props) {
     super(props);
 
@@ -12,6 +12,7 @@ class AddARepo extends React.Component {
       error: null,
       repo: null,
       text: '',
+      key: 1,
     };
   }
 
@@ -36,24 +37,29 @@ class AddARepo extends React.Component {
     const { children } = this.props;
 
     if (repo != null) {
-      return <Switch><Redirect to="/commits" /></Switch>;
+      if (window.location.pathname !== '/commits') {
+        return <Switch><Redirect to="/commits" /></Switch>;
+      }
+      return <Switch><Redirect to="/mycommits" /></Switch>;
     }
 
     return (
-      <div className="ui container center aligned">
-        <SearchBar key={key} text={text} onSubmit={t => this.onSearchSubmit(t)} title="Add a Repository" error={error} />
-        {children}
+      <div className="ui one column stackable center aligned page grid spacing">
+        <div className="column twelve wide">
+          <SearchBar key={key} text={text} onSubmit={t => this.onSearchSubmit(t)} title="Add a Repository" error={error} />
+          {children}
+        </div>
       </div>
     );
   }
 }
 
-AddARepo.defaultProps = {
+Header.defaultProps = {
   children: null,
 };
 
-AddARepo.propTypes = {
+Header.propTypes = {
   children: PropTypes.node,
 };
 
-export default AddARepo;
+export default Header;

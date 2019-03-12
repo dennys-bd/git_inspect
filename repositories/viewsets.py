@@ -52,6 +52,7 @@ class RepositoryViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
 
             saved = serializer.save(user=self.request.user)
 
+            # TODO: Check Date for 30 days
             recover_commits(saved.id)
             subscribe_on_repo.delay(saved.id)
 
@@ -67,13 +68,24 @@ class CommitViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
     serializer_class = CommitSerializer
     permission_classes = (IsCreateOrIsAuthenticated,)
     pagination_class = CursorPagination
+    filter_fields = ['repository', 'repository__id']
 
     def get_queryset(self):
-        return Commit.objects.all()
+        return Commit.objects.all().filter(repository__user=self.request.user)
 
     def create(self, request, *args, **kwargs):
-        print(f'PARAMS: {request.POST}')
+        # dct = request.data.dict()dct
+
+        # import pdb; pdb.set_trace()
+        # json_data = json.loads()
+        print(f"DATA: {request.data}")
+        print('::::' * 20)
+        print(f"PARAMS: {request.POST}")
         return HttpResponse(status=204)
+
+    # def perform_create(self, serializer):
+    #     import pdb; pdb.set_trace()
+    #     pass
 
     # def list(self, request, *args, **kwargs):
     #     import pdb; pdb.set_trace()

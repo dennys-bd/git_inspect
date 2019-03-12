@@ -13,6 +13,7 @@ class CommitSerializer(serializers.ModelSerializer):
             'sha', 'url', 'author', 'message', 'created',
             'repository_name', 'repository_id'
         )
+        read_only_fields = ('sha', 'url', 'author',)
 
 
 class RepositorySerializer(serializers.ModelSerializer):

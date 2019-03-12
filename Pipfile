@@ -37,6 +37,7 @@ ipython = "*"
 djangorestframework = "*"
 django-oauth-toolkit = "*"
 django-extensions = "*"
+django-filter = "*"
 
 [requires]
 python_version = "3.6"

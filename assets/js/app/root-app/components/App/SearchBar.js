@@ -62,8 +62,7 @@ class SearchBar extends React.Component {
   render() {
     const { text, title } = this.state;
     return (
-
-      <div className="ui segment">
+      <div className="ui segment header">
         {this.getForm(
           <div className="field">
             <h3>{title}</h3>

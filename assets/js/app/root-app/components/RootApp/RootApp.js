@@ -5,8 +5,10 @@ import {
 } from 'react-router-dom';
 import axios from 'axios';
 import Auth from '../Auth/Auth';
+
 import App from '../App/App';
 import CommitList from '../App/CommitList';
+import Repository from '../App/Repository';
 import STATUS from '../Auth/Status';
 
 import './style.scss';
@@ -30,14 +32,16 @@ class RootApp extends React.Component {
   render() {
     const { user } = this.state;
 
-    // <Route path="/repository/:id" component={Repository} />;
+
     if (user === STATUS.AUTHENTICATED) {
       return (
         <BrowserRouter>
           <Switch>
             <Redirect from="/login" to="/" />
+            <Redirect from="/mycommits" to="/commits" />
             <Route path="/" exact component={App} />
             <Route path="/commits" component={CommitList} />
+            <Route path="/repository/:id" component={Repository} />
           </Switch>
         </BrowserRouter>
       );
