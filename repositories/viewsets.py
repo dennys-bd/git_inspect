@@ -7,23 +7,12 @@ from django.http import HttpResponse
 import requests
 from rest_framework.exceptions import NotFound
 from rest_framework.pagination import CursorPagination
-from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from .models import Commit, Repository
+from .permissions import IsCreateOrIsAuthenticatedOr404
 from .serializers import CommitSerializer, RepositorySerializer
 from .tasks import recover_commits, subscribe_on_repo
-
-
-class IsCreateOrIsAuthenticated(BasePermission):
-    """
-    permission to create_only
-    """
-    def has_permission(self, request, view):
-        if view.action == 'create':
-            return True
-
-        return IsAuthenticated.has_permission(self, request, view)
 
 
 class RepositoryViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
@@ -51,6 +40,7 @@ class RepositoryViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
             serializer.validated_data['description'] = json_data['description']
             serializer.validated_data['github_id'] = json_data['id']
 
+            # TODO: Treat Error of duplicated repository
             saved = serializer.save(user=self.request.user)
 
             # TODO: Check Date for 30 days
@@ -67,7 +57,7 @@ class RepositoryViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
 
 class CommitViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
     serializer_class = CommitSerializer
-    permission_classes = (IsCreateOrIsAuthenticated,)
+    permission_classes = (IsCreateOrIsAuthenticatedOr404,)
     pagination_class = CursorPagination
     filter_fields = ['repository', 'repository__id']
 
@@ -84,10 +74,6 @@ class CommitViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
 
         commits = payload.get('commits', None)
         repo = payload.get('repository', None)
-
-        print(f"payload {payload}")
-        print(f"commits {commits}")
-        print(f"repo {repo}")
 
         if not (commits and repo):
             return HttpResponse(status=http.HTTPStatus.UNPROCESSABLE_ENTITY)

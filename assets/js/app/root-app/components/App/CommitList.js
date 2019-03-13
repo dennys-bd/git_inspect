@@ -6,8 +6,6 @@ import _ from 'lodash';
 import Commit from './Commit';
 import Header from './Header';
 
-
-// TODO: um repositorio sem commits deveria levar para a lista porém com blank state
 class CommitList extends React.Component {
   constructor(props) {
     super(props);
@@ -22,7 +20,6 @@ class CommitList extends React.Component {
 
     this.onScroll = this.onScroll.bind(this);
     this.loadCommits = this.loadCommits.bind(this);
-    this.componentDidMount = this.componentDidMount.bind(this);
   }
 
   componentDidMount() {
@@ -88,6 +85,25 @@ class CommitList extends React.Component {
 
   render() {
     const { hasNext, commits, isLoading } = this.state;
+
+    if (commits.length === 0 && !hasNext) {
+      return (
+        <Header>
+          <div className="ui message">
+            <div className="header">
+              Added successfully, your repository is tracked now.
+            </div>
+            <ul className="list">
+              <li>It appears that you have not committed in it for the last 30 days</li>
+              <li>
+                Don not worry once you push something to your repository we will receive it too.
+              </li>
+              <li>You do not have to add this repository again.</li>
+            </ul>
+          </div>
+        </Header>
+      );
+    }
     if (commits.length === 0) {
       return null;
     }

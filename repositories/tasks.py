@@ -20,34 +20,31 @@ def recover_commits(repository_id):
     except ObjectDoesNotExist:
         return
 
-    if repo.commit_set.count() > 0:
-        pass
-    else:
-        since = datetime.date.today() - datetime.timedelta(days=30)
-        sincestr = since.strftime('%Y-%m-%D')
-        req = requests.get(
-            f'https://api.github.com/repos/{repo.full_name}/commits?since={sincestr}',
-            headers={
-                'Authorization': f'token {repo.user.github_token}',
-                'Accept': 'application/vnd.github.v3+json'
-            }
-        )
+    since = datetime.date.today() - datetime.timedelta(days=30)
+    sincestr = since.strftime('%Y-%m-%D')
+    req = requests.get(
+        f'https://api.github.com/repos/{repo.full_name}/commits?since={sincestr}',
+        headers={
+            'Authorization': f'token {repo.user.github_token}',
+            'Accept': 'application/vnd.github.v3+json'
+        }
+    )
 
-        if req.status_code == http.HTTPStatus.OK:
-            json_data = json.loads(req.text)
-            for c_data in json_data:
-                try:
-                    commit = Commit(
-                        sha=c_data['sha'],
-                        url=c_data['html_url'],
-                        author=c_data['commit']['author'],
-                        created=c_data['commit']['committer']['date'],
-                        message=c_data['commit']['message'],
-                        repository=repo,
-                    )
-                    commit.save()
-                except (TypeError, IntegrityError):
-                    pass
+    if req.status_code == http.HTTPStatus.OK:
+        json_data = json.loads(req.text)
+        for c_data in json_data:
+            try:
+                commit = Commit(
+                    sha=c_data['sha'],
+                    url=c_data['html_url'],
+                    author=c_data['commit']['author'],
+                    created=c_data['commit']['committer']['date'],
+                    message=c_data['commit']['message'],
+                    repository=repo,
+                )
+                commit.save()
+            except (TypeError, IntegrityError):
+                pass
 
 
 @app.task(autoretry_for=(RequestException,), default_retry_delay=15 * 60,
@@ -75,5 +72,11 @@ def subscribe_on_repo(repository_id):
         }
     )
 
+    if req.status_code == http.HTTPStatus.FORBIDDEN:
+        return
+
     if req.status_code != http.HTTPStatus.CREATED:
         raise RequestException
+
+    json_data = json.loads(req.text)
+    Repository.objects.filter(id=repository_id).update(github_hook_id=json_data['id'])

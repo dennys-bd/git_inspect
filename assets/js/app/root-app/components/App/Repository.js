@@ -12,6 +12,7 @@ const Repository = (props) => {
     },
   } = props;
 
+  // TODO: put a sub header with repository informations
   return <CommitList id={id} />;
 };
 

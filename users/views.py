@@ -3,7 +3,6 @@
 """
 import http
 import json
-# from rest_framework.response import Response
 import re
 
 from django.http import HttpResponse, HttpResponseNotFound
@@ -12,7 +11,7 @@ from django.template import loader
 import requests
 from decouple import config
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 
 from users.models import User
 
@@ -113,7 +112,6 @@ def verify_token(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def check_for_commits(request):
     commits = request.user.repository_set.prefetch_related('commit').exclude(
         commit__isnull=True).count()
