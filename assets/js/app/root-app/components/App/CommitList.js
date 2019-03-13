@@ -23,7 +23,6 @@ class CommitList extends React.Component {
   }
 
   componentDidMount() {
-    // TODO: call loadCommits again if screen is not completed filled yet
     const { id } = this.props;
     this.loadCommits(id);
     const debounced = _.debounce(this.onScroll, 50);

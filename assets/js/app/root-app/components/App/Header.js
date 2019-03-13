@@ -16,6 +16,7 @@ class Header extends React.Component {
     };
   }
 
+  // TODO: Create a Action bar with back button
   onSearchSubmit(text) {
     const { key } = this.state;
     axios.post('/repositories/?format=json', {

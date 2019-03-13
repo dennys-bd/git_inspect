@@ -21,7 +21,7 @@ def recover_commits(repository_id):
         return
 
     since = datetime.date.today() - datetime.timedelta(days=30)
-    sincestr = since.strftime('%Y-%m-%D')
+    sincestr = since.strftime('%Y-%m-%d')
     req = requests.get(
         f'https://api.github.com/repos/{repo.full_name}/commits?since={sincestr}',
         headers={

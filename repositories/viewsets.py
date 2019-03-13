@@ -40,10 +40,14 @@ class RepositoryViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
             serializer.validated_data['description'] = json_data['description']
             serializer.validated_data['github_id'] = json_data['id']
 
-            # TODO: Treat Error of duplicated repository
-            saved = serializer.save(user=self.request.user)
+            try:
+                saved = serializer.save(user=self.request.user)
+            except IntegrityError:
+                raise NotFound(
+                    detail="You have already added this repository",
+                    code=http.HTTPStatus.UNPROCESSABLE_ENTITY
+                )
 
-            # TODO: Check Date for 30 days
             recover_commits(saved.id)
             subscribe_on_repo.delay(saved.id)
 
