@@ -17,11 +17,11 @@ class CommitSerializer(serializers.ModelSerializer):
 
 
 class RepositorySerializer(serializers.ModelSerializer):
-    commits = CommitSerializer(source='commit_set', many=True, required=False)
+    # commits = CommitSerializer(source='commit_set', many=True, required=False)
 
     class Meta:
         model = Repository
         fields = (
-            'id', 'name', 'full_name', 'description', 'commits',
+            'id', 'name', 'full_name', 'description', 'github_hook_id'
         )
-        read_only_fields = ('id', 'fullname', 'description', 'commits',)
+        read_only_fields = ('id', 'fullname', 'description', 'github_hook_id',)

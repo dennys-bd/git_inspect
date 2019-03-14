@@ -15,15 +15,18 @@ class CommitList extends React.Component {
       hasNext: true,
       next: null,
       isLoading: true,
+      repo: null,
       commits: [],
     };
 
     this.onScroll = this.onScroll.bind(this);
     this.loadCommits = this.loadCommits.bind(this);
+    this.loadRepository = this.loadRepository.bind(this);
   }
 
   componentDidMount() {
     const { id } = this.props;
+    this.loadRepository(id);
     this.loadCommits(id);
     const debounced = _.debounce(this.onScroll, 50);
     window.addEventListener('scroll', _.debounce(debounced));
@@ -48,6 +51,17 @@ class CommitList extends React.Component {
     if ((window.innerHeight + window.scrollY) >= (document.body.scrollHeight - 100)) {
       this.setState({ isLoading: true }, loadCommits());
     }
+  }
+
+  loadRepository(id) {
+    if (id == null) {
+      return;
+    }
+
+    axios.get(`/repositories/${id}`)
+      .then((response) => {
+        this.setState({ repo: response.data });
+      });
   }
 
   loadCommits(id) {
@@ -83,7 +97,9 @@ class CommitList extends React.Component {
 
 
   render() {
-    const { hasNext, commits, isLoading } = this.state;
+    const {
+      hasNext, commits, isLoading, repo,
+    } = this.state;
 
     if (commits.length === 0 && !hasNext) {
       return (
@@ -115,6 +131,41 @@ class CommitList extends React.Component {
 
     return (
       <Header>
+        {repo && (
+          <div>
+            <div className="ui internally celled grid">
+              <div className="row">
+                <div className="ten wide column">
+                  <h2>
+                    {repo.name}
+                  </h2>
+                  <p>
+                    {repo.description}
+                  </p>
+                </div>
+                <div className="six wide column">
+                  { repo.github_hook_id
+                    ? (
+                      <div className="ui success message">
+                        <div className="header">
+                          Your sync is ok.
+                        </div>
+                        <p>Every push to github will automatically appear here</p>
+                      </div>
+                    )
+                    : (
+                      <div className="ui negative message">
+                        <div className="header">
+                          Your sync is not ok.
+                        </div>
+                        <p>Something prevented the githook to be created.</p>
+                      </div>
+                    )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="ui segment">
           <div className="ui relaxed divided list">
             {elements}
