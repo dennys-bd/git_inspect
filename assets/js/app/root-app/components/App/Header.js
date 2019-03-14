@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { Redirect, Switch } from 'react-router-dom';
+import { Redirect, Link, Switch } from 'react-router-dom';
 import SearchBar from './SearchBar';
 
 class Header extends React.Component {
@@ -16,7 +16,6 @@ class Header extends React.Component {
     };
   }
 
-  // TODO: Create a Action bar with back button
   onSearchSubmit(text) {
     const { key } = this.state;
     axios.post('/repositories/?format=json', {
@@ -36,6 +35,7 @@ class Header extends React.Component {
     } = this.state;
 
     const { children } = this.props;
+    let home = true;
 
     if (repo != null) {
       if (window.location.pathname !== '/commits') {
@@ -44,11 +44,25 @@ class Header extends React.Component {
       return <Switch><Redirect to="/mycommits" /></Switch>;
     }
 
+    if (window.location.pathname !== '/') {
+      home = false;
+    }
+
     return (
-      <div className="ui one column stackable center aligned page grid spacing">
-        <div className="column twelve wide">
-          <SearchBar key={key} text={text} onSubmit={t => this.onSearchSubmit(t)} title="Add a Repository" error={error} />
-          {children}
+      <div>
+        {!home && (
+          <div className="ui breadcrumb">
+            <i className="left angle icon divider" />
+            <Link to="/">
+              <div className="section">Home</div>
+            </Link>
+          </div>
+        )}
+        <div className="ui one column stackable center aligned page grid spacing">
+          <div className="column twelve wide">
+            <SearchBar key={key} text={text} onSubmit={t => this.onSearchSubmit(t)} title="Add a Repository" error={error} />
+            {children}
+          </div>
         </div>
       </div>
     );
