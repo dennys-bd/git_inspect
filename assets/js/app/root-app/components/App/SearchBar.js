@@ -67,6 +67,7 @@ class SearchBar extends React.Component {
           <div className="field">
             <h3>{title}</h3>
             <input
+              placeholder="username/repository"
               type="text"
               text={text}
               onChange={e => this.setState({ text: e.target.value })}
