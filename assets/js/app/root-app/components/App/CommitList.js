@@ -33,7 +33,7 @@ class CommitList extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.onScroll);
+    // window.removeEventListener('scroll', this.onScroll);
   }
 
   onScroll() {
@@ -135,7 +135,7 @@ class CommitList extends React.Component {
           <div>
             <div className="ui internally celled grid">
               <div className="row">
-                <div className="ten wide column">
+                <div className="ten wide column middle aligned">
                   <h2>
                     {repo.name}
                   </h2>

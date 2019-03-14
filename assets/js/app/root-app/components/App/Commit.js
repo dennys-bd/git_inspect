@@ -30,15 +30,26 @@ const Commit = (props) => {
     }
     return `${Math.floor(seconds)} seconds`;
   };
-
   return (
     <div className="item">
-      <i className="large github middle aligned icon" />
-      <div className="content">
-        <a className="header" href={data.url}>{data.message}</a>
-        <Link to={`repository/${data.repository_id}`}>{data.repository_name}</Link>
-        <div className="description">
-          {`${timeSince(Date.parse(data.created))} ago`}
+      <div className="content ui internally celled grid">
+        <div className="row">
+          <div className="five wide column middle aligned">
+            <i className="large github middle aligned icon" />
+            <a className="header" href={data.url}>{data.message}</a>
+          </div>
+          <div className="eleven wide column">
+            <p>
+              Commited by:
+              <br />
+              {` ${data.author.name}`}
+              {` ${data.author.email}`}
+              <br />
+              on
+              <Link to={`repository/${data.repository_id}`}>{` ${data.repository_name}`}</Link>
+              {`, ${timeSince(Date.parse(data.created))} ago`}
+            </p>
+          </div>
         </div>
       </div>
     </div>
