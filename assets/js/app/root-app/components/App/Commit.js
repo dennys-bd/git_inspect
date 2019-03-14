@@ -32,13 +32,13 @@ const Commit = (props) => {
   };
   return (
     <div className="item">
+      <i className="large github middle aligned icon" />
       <div className="content ui internally celled grid">
         <div className="row">
-          <div className="five wide column middle aligned">
-            <i className="large github middle aligned icon" />
+          <div className="eight wide column middle aligned">
             <a className="header" href={data.url}>{data.message}</a>
           </div>
-          <div className="eleven wide column">
+          <div className="eight wide column">
             <p>
               Commited by:
               <br />
