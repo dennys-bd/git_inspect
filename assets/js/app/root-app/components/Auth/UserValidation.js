@@ -21,7 +21,7 @@ const methods = {
   componentDidMount(props) {
     const { token, authenticate } = props;
 
-    axios.get(`/verifytoken?token=${token}`)
+    axios.get(`/verify_token?token=${token}`)
       .then((response) => {
         if (response.status === 204) {
           authenticate();

@@ -13,7 +13,7 @@ class CheckCommits extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('/checkcommits')
+    axios.get('/check_commits')
       .then(() => {
         this.setState({ status: Status.HAS_COMMIT });
       })
