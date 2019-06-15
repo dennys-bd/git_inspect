@@ -1,65 +1,32 @@
-import http
-import json
-
-from django.db import IntegrityError
-from django.http import HttpResponse
-
-import requests
-from rest_framework.exceptions import NotFound
+'''
+ViewSets for repositories app
+'''
 from rest_framework.pagination import CursorPagination
 from rest_framework.viewsets import ModelViewSet
 
 from .models import Commit, Repository
 from .permissions import IsCreateOrIsAuthenticatedOr404
 from .serializers import CommitSerializer, RepositorySerializer
-from .tasks import recover_commits, subscribe_on_repo
+from .utils import create_commit, create_repo
 
 
 class RepositoryViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
+    '''
+    Repository ViewSet to resolve the requests to /repositories
+    '''
     serializer_class = RepositorySerializer
 
     def get_queryset(self):
         return Repository.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-
-        # TODO: CHECK USER NAME
-
-        req = requests.get(
-            f'https://api.github.com/repos/{serializer.validated_data["name"]}',
-            headers={
-                'Authorization': f'token {self.request.user.github_token}',
-                'Accept': 'application/vnd.github.v3+json'
-            }
-        )
-
-        if req.status_code == http.HTTPStatus.OK:
-            json_data = json.loads(req.text)
-            serializer.validated_data['name'] = json_data['name']
-            serializer.validated_data['url'] = json_data['html_url']
-            serializer.validated_data['description'] = json_data['description']
-            serializer.validated_data['github_id'] = json_data['id']
-
-            try:
-                saved = serializer.save(user=self.request.user)
-            except IntegrityError:
-                raise NotFound(
-                    detail="You have already added this repository",
-                    code=http.HTTPStatus.UNPROCESSABLE_ENTITY
-                )
-
-            recover_commits(saved.id)
-            subscribe_on_repo.delay(saved.id)
-
-            return saved
-
-        raise NotFound(
-            detail="This Repository doesn't exists or you don't have permission to access it",
-            code=http.HTTPStatus.NOT_FOUND
-        )
+        return create_repo(self.request, serializer)
 
 
 class CommitViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
+    '''
+    Commit ViewSet to resolve the requests to /commits
+    '''
     serializer_class = CommitSerializer
     permission_classes = (IsCreateOrIsAuthenticatedOr404,)
     pagination_class = CursorPagination
@@ -69,38 +36,4 @@ class CommitViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
         return Commit.objects.all().filter(repository__user=self.request.user)
 
     def create(self, request, *args, **kwargs):
-        payload = request.POST.dict().get('payload', None)
-
-        if not payload:
-            return HttpResponse(status=http.HTTPStatus.UNPROCESSABLE_ENTITY)
-
-        payload = json.loads(payload)
-
-        commits = payload.get('commits', None)
-        repo = payload.get('repository', None)
-
-        if not (commits and repo):
-            return HttpResponse(status=http.HTTPStatus.UNPROCESSABLE_ENTITY)
-
-        try:
-            repo = Repository.objects.get(github_id=repo['id'])
-        except Repository.DoesNotExist:
-            return HttpResponse(status=http.HTTPStatus.NOT_FOUND)
-
-        for commit in commits:
-            if Commit.objects.filter(sha=commit['id']).exists():
-                continue
-            try:
-                commit = Commit(
-                    sha=commit['id'],
-                    url=commit['url'],
-                    author=commit['author'],
-                    created=commit['timestamp'],
-                    message=commit.get('message', None),
-                    repository=repo,
-                )
-                commit.save()
-            except IntegrityError:
-                return HttpResponse(status=http.HTTPStatus.UNPROCESSABLE_ENTITY)
-
-        return HttpResponse(status=http.HTTPStatus.NO_CONTENT)
+        return create_commit(request)
