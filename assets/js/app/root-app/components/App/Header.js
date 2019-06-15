@@ -18,7 +18,7 @@ class Header extends React.Component {
 
   onSearchSubmit(text) {
     const { key } = this.state;
-    axios.post('/repositories/?format=json', {
+    axios.post('/api/repositories/?format=json', {
       name: text,
     })
       .then(() => {

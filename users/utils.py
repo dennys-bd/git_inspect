@@ -106,13 +106,9 @@ def validate_github_token(request):
 
 
 def check_for_github_commits(request):
-    print(f'request: {request}')
     commits = request.user.repository_set.prefetch_related('commit').exclude(
         commit__isnull=True).count()
-    print('1')
     if commits > 0:
-        print('1.5')
         return HttpResponse(status=204)
 
-    print('2')
     return HttpResponseNotFound()

@@ -58,7 +58,7 @@ class CommitList extends React.Component {
       return;
     }
 
-    axios.get(`/repositories/${id}`)
+    axios.get(`/api/repositories/${id}`)
       .then((response) => {
         this.setState({ repo: response.data });
       });
@@ -71,9 +71,9 @@ class CommitList extends React.Component {
     if (next != null) {
       promisse = axios.get(next);
     } else if (id == null) {
-      promisse = axios.get('/commits/');
+      promisse = axios.get('/api/commits/');
     } else {
-      promisse = axios.get(`/commits/?repository__id=${id}`);
+      promisse = axios.get(`/api/commits/?repository__id=${id}`);
     }
     promisse
       .then((response) => {
