@@ -69,8 +69,5 @@ Just run `pipenv install LIB_NAME_ON_PYPI` and then `pipenv lock` to lock the ve
 - Run `pre-commit install` to enable the hook into your git repo. The hook will run automatically for each commit.
 - Run `git commit -m "Your message" -n` to skip the hook if you need.
 
-## Commercial Support
-This project, as other Vinta open-source projects, is used in products of Vinta clients. We are always looking for exciting work, so if you need any commercial support, feel free to get in touch: contact@vinta.com.br
-
 Copyright (c) 2018 Vinta Serviços e Soluções Tecnológicas Ltda.
 [MIT License](LICENSE.txt)
